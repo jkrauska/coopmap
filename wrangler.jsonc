@@ -1,0 +1,17 @@
+{
+  // Assets-only Worker. Wrangler publishes the files in this directory;
+  // .assetsignore keeps the Python tooling off the public site.
+  "name": "coopmap",
+  "compatibility_date": "2025-12-19",
+  "workers_dev": true,
+  "assets": {
+    "directory": ".",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  },
+  // The coopmap.org zone must be on the same Cloudflare account.
+  "routes": [
+    { "pattern": "coopmap.org", "custom_domain": true },
+    { "pattern": "www.coopmap.org", "custom_domain": true }
+  ]
+}

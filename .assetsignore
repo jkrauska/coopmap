@@ -1,0 +1,7 @@
+# Publish the map only. Un-ignore any new public file here.
+*
+!index.html
+!app.css
+!app.js
+!data.js
+!facts.js

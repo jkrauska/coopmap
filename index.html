@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>US Electric Co-ops</title>
+    <link rel="stylesheet" href="app.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/ol@v10.3.1/ol.css"
+      integrity="sha384-Jpg1uvTciFJuHq+90Ly0/2SKRT9yS5OhbIN5FuFoFWji9fc44ok8xxO88CJi8Z5W"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body class="is-slideshow">
+    <button type="button" id="slideshow-toggle" aria-pressed="true" aria-label="Stop"></button>
+    <header class="header">
+      <div>
+        <h1>US Electric Co-ops</h1>
+        <p class="subtitle">
+          <span id="territory-count">Loading territories…</span>
+          <a
+            href="https://www.arcgis.com/home/item.html?id=a249744f9f5e494d917086c023e9a8f1"
+            target="_blank"
+            rel="noopener noreferrer"
+          >HIFLD service territories</a>
+        </p>
+      </div>
+    </header>
+
+    <main class="main">
+      <aside class="list" aria-label="Co-op list">
+        <form id="territory-filters" class="filters" autocomplete="off">
+          <label class="field">
+            <span>Search</span>
+            <input id="territory-q" type="search" placeholder="Name or city" spellcheck="false" />
+          </label>
+          <label class="field">
+            <span>State</span>
+            <select id="territory-state">
+              <option value="">All states</option>
+            </select>
+          </label>
+        </form>
+
+        <article id="territory-detail" class="detail" hidden>
+          <h2 id="detail-name"></h2>
+          <p id="detail-place"></p>
+          <p id="detail-address" hidden></p>
+          <p id="detail-phone" hidden></p>
+          <p id="detail-web" hidden></p>
+          <button type="button" id="detail-zoom">Zoom to territory</button>
+        </article>
+
+        <p id="territory-empty" class="empty" hidden>No co-ops match.</p>
+        <ul id="territory-results" class="results"></ul>
+      </aside>
+      <div id="map">
+        <div id="slide-overlay" class="slide-overlay" hidden>
+          <article class="slide-box slide-box--coop" aria-live="polite">
+            <p id="slide-coop" class="slide-box__coop"></p>
+            <p id="slide-place" class="slide-box__place"></p>
+          </article>
+          <article class="slide-box slide-box--fact" aria-live="polite">
+            <p class="slide-box__fact">
+              <span class="slide-box__title">Coop Facts and Histories:</span>
+              <span id="slide-fact"></span><span id="slide-principle" hidden></span>
+            </p>
+            <p class="slide-box__source">
+              Source:
+              <a
+                id="slide-source-link"
+                href="https://archive.org/details/rurallinesusasto811unit_0"
+                target="_blank"
+                rel="noopener noreferrer"
+              >Rural Lines, USA</a><span id="slide-source-detail"></span><span id="slide-source-when"> · USDA, 1960</span><span id="slide-principle-source" hidden> · <a id="slide-principle-link" href="https://www.electric.coop/seven-cooperative-principles" target="_blank" rel="noopener noreferrer">Seven Cooperative Principles</a> · NRECA, 2016</span>
+            </p>
+            <div class="slide-box__bar" id="slide-bar"></div>
+          </article>
+        </div>
+      </div>
+    </main>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/ol@v10.3.1/dist/ol.js"
+      integrity="sha384-GtOM9G1JWFKmDbfOLBrez9YebIrX1pqVVtYukhqrKOtyneLNxnTIFMe8ER850GT/"
+      crossorigin="anonymous"
+    ></script>
+    <script src="data.js"></script>
+    <script src="facts.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

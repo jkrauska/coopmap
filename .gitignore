@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Wrangler
+.wrangler/
+.dev.vars
+node_modules/
+
+# ArcGIS extracts. Rebuild with `make fetch`.
+/cache/

@@ -1,0 +1,3 @@
+# Built by build.py. Committed so index.html works from file://, but
+# collapsed in diffs and left out of GitHub language stats.
+data.js -diff linguist-generated
