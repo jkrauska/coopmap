@@ -12,7 +12,7 @@ js: index.html app.css app.js facts.js
 content: data.js
 	@echo "content assets ready"
 
-data.js: build.py filter.py cache/.complete | .venv
+data.js: build.py filter.py websites.json cache/.complete | .venv
 	uv run --no-sync build.py --offline
 
 cache/.complete: | .venv

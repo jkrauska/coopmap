@@ -190,6 +190,15 @@ function zoomTo(feature, { duration = 350, padding = [32, 32, 32, 32], fraction 
   });
 }
 
+function websiteLink(website, text) {
+  const link = document.createElement("a");
+  link.href = /^https?:\/\//i.test(website) ? website : `https://${website}`;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = text;
+  return link;
+}
+
 function showDetail(feature) {
   if (!feature) {
     detailEl.hidden = true;
@@ -212,13 +221,7 @@ function showDetail(feature) {
   detailWeb.hidden = !website;
   detailWeb.replaceChildren();
   if (website) {
-    const link = document.createElement("a");
-    const href = /^https?:\/\//i.test(website) ? website : `https://${website}`;
-    link.href = href;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = website.replace(/^https?:\/\//i, "");
-    detailWeb.appendChild(link);
+    detailWeb.appendChild(websiteLink(website, website.replace(/^https?:\/\//i, "")));
   }
   detailEl.hidden = false;
 }
@@ -382,7 +385,10 @@ map.on("pointermove", (event) => {
   }
 });
 
-map.getViewport().addEventListener("pointerleave", () => {
+// Touch pointers fire pointerleave right after a tap, which would hide the
+// name the tap just showed.
+map.getViewport().addEventListener("pointerleave", (event) => {
+  if (event.pointerType === "touch") return;
   hideTip();
   if (hoverId == null) return;
   hoverId = null;
@@ -390,9 +396,19 @@ map.getViewport().addEventListener("pointerleave", () => {
   layer.changed();
 });
 
+// Touch has no hover, so a tap highlights the co-op and shows its name.
 map.on("click", (event) => {
-  if (slideshowOn) return;
   const feature = map.forEachFeatureAtPixel(event.pixel, (hit) => hit);
+  if (event.originalEvent.pointerType === "touch") {
+    if (feature) showTip(feature, event.coordinate, event.pixel);
+    else hideTip();
+    const next = feature ? feature.getId() : null;
+    if (next !== hoverId) {
+      hoverId = next;
+      layer.changed();
+    }
+  }
+  if (slideshowOn) return;
   selectFeature(feature || null, { scroll: true });
 });
 
@@ -402,9 +418,8 @@ const slideToggle = document.getElementById("slideshow-toggle");
 const slideOverlay = document.getElementById("slide-overlay");
 const slideCoop = document.getElementById("slide-coop");
 const slidePlace = document.getElementById("slide-place");
+const slideTitle = document.getElementById("slide-title");
 const slideFact = document.getElementById("slide-fact");
-const slidePrinciple = document.getElementById("slide-principle");
-const slidePrincipleSource = document.getElementById("slide-principle-source");
 const slideSourceLink = document.getElementById("slide-source-link");
 const slideSourceDetail = document.getElementById("slide-source-detail");
 const slideSourceWhen = document.getElementById("slide-source-when");
@@ -423,7 +438,10 @@ for (const [region, states] of Object.entries({
 function factsForState(state) {
   const all = window.COOP_FACTS || [];
   const national = all.filter((fact) => !(fact.states || []).length);
-  const sheet = national.filter((fact) => fact.chapter === "Electric Co-op Facts & Figures");
+  // National cards shown everywhere, mixed in with the local ones.
+  const sheet = national.filter((fact) =>
+    fact.chapter === "Electric Co-op Facts & Figures" || fact.chapter === "Seven Cooperative Principles",
+  );
   const tagged = all.filter((fact) => (fact.states || []).length);
   const mix = (local) => {
     if (!sheet.length) return local;
@@ -448,7 +466,6 @@ let slideTimer = null;
 let slideHold = null;
 let lastFeatureId = null;
 let lastFact = null;
-let lastPrinciple = null;
 
 function pickOther(items, previous) {
   if (!items.length) return null;
@@ -524,23 +541,12 @@ function showSlide() {
   lastFeatureId = feature.getId();
   lastFact = fact;
   const city = clean(feature.get("city"));
-  slideCoop.textContent = feature.get("name") || "Unknown co-op";
+  const coopName = feature.get("name") || "Unknown co-op";
+  const website = clean(feature.get("website"));
+  slideCoop.replaceChildren(website ? websiteLink(website, coopName) : coopName);
   slidePlace.textContent = [city, stateName(state)].filter(Boolean).join(", ");
+  slideTitle.textContent = `${(fact && fact.title) || "Coop Facts and Histories"}:`;
   slideFact.textContent = fact ? fact.text : "";
-  const principles = window.COOP_PRINCIPLES || [];
-  const principle = principles.length && Math.random() < 1 / 3
-    ? pickOther(principles, lastPrinciple)
-    : null;
-  lastPrinciple = principle;
-  if (principle) {
-    slidePrinciple.hidden = false;
-    slidePrinciple.textContent = ` ${principle.name}. ${principle.text}`;
-    slidePrincipleSource.hidden = false;
-  } else {
-    slidePrinciple.hidden = true;
-    slidePrinciple.textContent = "";
-    slidePrincipleSource.hidden = true;
-  }
   slideSourceLink.textContent = (fact && fact.source) || "Rural Lines, USA";
   slideSourceLink.href = (fact && fact.href) || "https://archive.org/details/rurallinesusasto811unit_0";
   slideSourceDetail.textContent = fact && fact.chapter ? `, ${fact.chapter}` : "";
@@ -615,6 +621,13 @@ map.getView().on("change:resolution", () => {
 document.addEventListener("keydown", (event) => {
   const tag = event.target && event.target.tagName;
   if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+  // Space flips to the next slide. preventDefault keeps a focused button
+  // (such as the slideshow toggle) from also activating.
+  if (event.key === " " && slideshowOn) {
+    event.preventDefault();
+    if (!event.repeat) showSlide();
+    return;
+  }
   const zoomOut = event.key === "-" || event.key === "_" || event.key === "Subtract";
   const pan = event.key.startsWith("Arrow");
   if (zoomOut || pan) holdSlideForLook();

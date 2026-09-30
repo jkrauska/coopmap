@@ -4,7 +4,9 @@ US electric co-op service territories. Open `index.html` in a browser. No local 
 
 Map tiles and OpenLayers load from the network. The co-op polygons are in `data.js`, so the page works from a `file://` URL.
 
-Slideshow highlights a random co-op every 20 seconds and shows a fact, preferring a story from that state or region. Most facts come from [Rural Lines, USA](https://archive.org/details/rurallinesusasto811unit_0) (USDA, 1960). The rest come from NRECA pages on electric.coop, including the [fact sheet](https://www.electric.coop/electric-cooperative-fact-sheet) and the [history](https://www.electric.coop/our-organization/history).
+Slideshow highlights a random co-op every 20 seconds and shows a fact, preferring a story from that state or region. Press Space to skip to the next one. Most facts come from [Rural Lines, USA](https://archive.org/details/rurallinesusasto811unit_0) (USDA, 1960). The rest come from NRECA pages on electric.coop, including the [fact sheet](https://www.electric.coop/electric-cooperative-fact-sheet) and the [history](https://www.electric.coop/our-organization/history).
+
+Hovering over a territory shows the co-op's name. On touch screens, tap a territory instead. The name on the slideshow card links to the co-op's website.
 
 ## Dependencies
 
@@ -37,6 +39,8 @@ make deploy     # build, then publish to coopmap.org
 ```
 
 `data.js` is generated but committed, so the page works straight from a clone.
+
+`websites.json` maps each co-op's full name to its homepage, or `null` when no official site was found. Entries were looked up by web search because the HIFLD `WEBSITE` field is often stale, malformed, or points at a billing portal. `build.py` uses the index over HIFLD and lists any co-op missing from it as `unindexed`. Add those names to the index.
 
 ## Deploy
 

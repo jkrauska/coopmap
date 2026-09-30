@@ -8,6 +8,10 @@ PUDs, and writes data.js. Open index.html directly; no local server.
 Raw responses are stored under cache/ so later builds can reprocess
 territories without downloading them again. Prefer `make build`.
 
+websites.json maps each co-op name to its homepage, checked by hand and by
+web search. It overrides the HIFLD WEBSITE field, which is often stale or
+malformed. A null entry means no official site was found.
+
     make fetch      # download into cache/ (skipped when the cache is complete)
     make content    # data.js from the cache only
     make build      # frontend files + data.js
@@ -34,6 +38,7 @@ from filter import is_us_electric_coop
 
 _ROOT = Path(__file__).resolve().parent
 _DEFAULT_OUT = _ROOT / "data.js"
+_WEBSITES = _ROOT / "websites.json"
 _DEFAULT_CACHE = _ROOT / "cache"
 
 _COOP_QUERY = (
@@ -285,6 +290,7 @@ def build(
     tolerance: float,
     hifld_rows: list[dict],
     features_by_state: dict[str, list[dict]],
+    websites: dict[str, str | None],
 ) -> tuple[dict, list[str]]:
     types = _hifld_types(hifld_rows)
 
@@ -319,7 +325,11 @@ def build(
                         "address": _blank(props.get("ADDRESS")),
                         "zip": _blank(props.get("ZIP")),
                         "telephone": _blank(props.get("TELEPHONE")),
-                        "website": _blank(props.get("WEBSITE")),
+                        "website": (
+                            websites[name.strip()]
+                            if name.strip() in websites
+                            else _blank(props.get("WEBSITE"))
+                        ),
                         "utility_type": _blank(utility_type),
                     },
                     "geometry": simplified,
@@ -386,11 +396,21 @@ def main(argv: list[str] | None = None) -> int:
     if args.fetch_only:
         return 0
 
-    collection, dropped = build(args.tolerance, hifld_rows, features_by_state)
+    websites = _read_json(_WEBSITES) if _WEBSITES.exists() else {}
+    collection, dropped = build(args.tolerance, hifld_rows, features_by_state, websites)
     print(f"Kept {collection['count']}", flush=True)
     print(f"Dropped {len(dropped)}", flush=True)
     for line in dropped:
         print(f"  drop {line}")
+    unindexed = [
+        feat["properties"]["name"]
+        for feat in collection["features"]
+        if feat["properties"]["name"] not in websites
+    ]
+    if unindexed:
+        print(f"Not in {_WEBSITES.name}: {len(unindexed)}", flush=True)
+        for name in unindexed:
+            print(f"  unindexed {name}")
     if args.dry_run:
         return 0
     args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -3,6 +3,7 @@
 // https://archive.org/details/rurallinesusasto811unit_0
 // `chapter` is the book chapter, highlights appendix, or article, shown on the source line.
 // Facts from electric.coop set `source`, `href`, and `published`. The rest default to the book.
+// `title` replaces the slide's "Coop Facts and Histories" heading.
 // `states` is empty for a national fact. Slideshow prefers the co-op's state,
 // then other states in the same region.
 window.COOP_FACTS = [
@@ -122,16 +123,12 @@ window.COOP_FACTS = [
   { states: [], source: "electric.coop", href: "https://www.electric.coop/electric-cooperative-fact-sheet", published: "NRECA, 2026", chapter: "Electric Co-op Facts & Figures", text: "As of July 2026, electric co-ops had announced more than 18 gigawatts of new generation, including 13 gigawatts of natural gas, to come online by 2031." },
   { states: [], source: "electric.coop", href: "https://www.electric.coop/electric-cooperative-fact-sheet", published: "NRECA, 2026", chapter: "Electric Co-op Facts & Figures", text: "In 2026, about 85 percent of co-op electricity comes from coal, natural gas, nuclear, and hydro. About 15 percent comes from wind and solar." },
   { states: [], source: "electric.coop", href: "https://www.electric.coop/electric-cooperative-fact-sheet", published: "NRECA, 2026", chapter: "Electric Co-op Facts & Figures", text: "In 2026, generation-and-transmission co-ops project $88 billion in capital spending over the next 10 years, more than double the forecast from three years earlier." },
-];
 
-// Not slideshow cards. showSlide sometimes appends one of these to the
-// history already on screen. https://www.electric.coop/seven-cooperative-principles
-window.COOP_PRINCIPLES = [
-  { name: "Open and Voluntary Membership", text: "Membership is open to anyone who can use the co-op’s service and will take on the duties of membership." },
-  { name: "Democratic Member Control", text: "Members set policy and elect the directors. In a distribution co-op, each member has one vote." },
-  { name: "Members’ Economic Participation", text: "Members supply the capital, control it, and share surpluses in proportion to how much they use the co-op." },
-  { name: "Autonomy and Independence", text: "The co-op stays under member control, even when it borrows or signs agreements with government or other organizations." },
-  { name: "Education, Training, and Information", text: "Members, directors, and employees learn how the co-op works, and the co-op explains that to the public." },
-  { name: "Cooperation Among Cooperatives", text: "Co-ops work together locally, regionally, and nationally so they can serve members better." },
-  { name: "Concern for Community", text: "Co-ops support the sustainable development of their communities, under policies the members approve." },
+  { states: [], title: "Coop Principles", source: "electric.coop", href: "https://www.electric.coop/seven-cooperative-principles", published: "NRECA, 2016", chapter: "Seven Cooperative Principles", text: "1. Open and Voluntary Membership: Membership is open to anyone who can use the co-op’s service and will take on the duties of membership." },
+  { states: [], title: "Coop Principles", source: "electric.coop", href: "https://www.electric.coop/seven-cooperative-principles", published: "NRECA, 2016", chapter: "Seven Cooperative Principles", text: "2. Democratic Member Control: Members set policy and elect the directors. In a distribution co-op, each member has one vote." },
+  { states: [], title: "Coop Principles", source: "electric.coop", href: "https://www.electric.coop/seven-cooperative-principles", published: "NRECA, 2016", chapter: "Seven Cooperative Principles", text: "3. Members’ Economic Participation: Members supply the capital, control it, and share surpluses in proportion to how much they use the co-op." },
+  { states: [], title: "Coop Principles", source: "electric.coop", href: "https://www.electric.coop/seven-cooperative-principles", published: "NRECA, 2016", chapter: "Seven Cooperative Principles", text: "4. Autonomy and Independence: The co-op stays under member control, even when it borrows or signs agreements with government or other organizations." },
+  { states: [], title: "Coop Principles", source: "electric.coop", href: "https://www.electric.coop/seven-cooperative-principles", published: "NRECA, 2016", chapter: "Seven Cooperative Principles", text: "5. Education, Training, and Information: Members, directors, and employees learn how the co-op works, and the co-op explains that to the public." },
+  { states: [], title: "Coop Principles", source: "electric.coop", href: "https://www.electric.coop/seven-cooperative-principles", published: "NRECA, 2016", chapter: "Seven Cooperative Principles", text: "6. Cooperation Among Cooperatives: Co-ops work together locally, regionally, and nationally so they can serve members better." },
+  { states: [], title: "Coop Principles", source: "electric.coop", href: "https://www.electric.coop/seven-cooperative-principles", published: "NRECA, 2016", chapter: "Seven Cooperative Principles", text: "7. Concern for Community: Co-ops support the sustainable development of their communities, under policies the members approve." },
 ];
